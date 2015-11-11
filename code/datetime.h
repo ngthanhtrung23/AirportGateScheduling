@@ -8,7 +8,7 @@ struct Date {
     Date() {}
     Date(int year, int month, int date) : year(year), month(month), date(date) {}
 
-    int to_int() { // return some unique int for different date
+    int to_int() const { // return some unique int for different date
         return year * 400 + month * 32 + date;
     }
 };
@@ -22,7 +22,7 @@ struct Time {
         min = timestamp % 100;
     }
 
-    int to_int() {
+    int to_int() const {
         return hour * 60 + min;
     }
 };

@@ -1,7 +1,18 @@
+const int AIRPORT_ID = 12478;
+
 #include "template.h"
 #include "flight.h"
+
+bool operator < (const Flight& a, const Flight& b) {
+    int time_a = a.get_time(AIRPORT_ID);
+    int time_b = b.get_time(AIRPORT_ID);
+    return time_a < time_b;
+}
+
 #include "schedule.h"
 #include "evaluator.h"
+
+//const int AIRPORT_ID = 12892;
 
 char buff[1000111];
 map< int, vector<Flight> > readFlightInfo(char* file_name) {
@@ -25,15 +36,8 @@ map< int, vector<Flight> > readFlightInfo(char* file_name) {
             DEBUG(buff);
         }
 
-        if (flight_count == 1) {
-            cout << flight.date.to_int() << endl;
-            DEBUG(flight.airline_id);
-            DEBUG(flight.origin_airport_id);
-            DEBUG(flight.dest_airport_id);
-            DEBUG(flight.dep_delay);
-            DEBUG(flight.arr_delay);
-            DEBUG(flight.cancelled);
-        }
+        if (flight.origin_airport_id != AIRPORT_ID
+                && flight.dest_airport_id != AIRPORT_ID) continue;
 
         int date_stamp = flight.date.to_int();
         if (result.count(date_stamp)) {
@@ -58,10 +62,14 @@ int main(int argc, char* argv[]) {
 
     for (auto flight : flights) {
         DEBUG(flight.first);
-        PartialSchedule rand_sched = getRandomSchedule(flight.second);
-        PartialSchedule beam_sched = getBeamSearchSchedule(flight.second);
-
+        DEBUG(flight.second.size());
+        PartialSchedule rand_sched = getRandomSchedule(AIRPORT_ID, flight.second);
         DEBUG(rand_sched.countGate());
+        DEBUG(rand_sched.countCollisionDelay());
+
+        PartialSchedule beam_sched = getBeamSearchSchedule(AIRPORT_ID, flight.second);
         DEBUG(beam_sched.countGate());
+        DEBUG(beam_sched.countCollisionDelay());
+        break;
     }
 }
